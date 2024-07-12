@@ -1,57 +1,59 @@
 # steganography_project
-Creating a good README for a steganography project on GitHub is crucial for helping others understand your project and how to use it. Here's a structured outline you can follow:
+import cv2
+import hashlib
+import os
+d = {chr(i): i for i in range(255)}
+c = {i: chr(i) for i in range(255)}
 
----
+# Reading the image
+x = cv2.imread(r"C:\Users\jyoth\OneDrive\Desktop\New folder\steganograpy.jpeg")
+i, j, k = x.shape
+print(i, j, k)
 
-# Project Name
+# Input security key and text to hide
+key = input("\nEnter key to edit (Security Key): ")
+text = input("\nEnter text to hide:")
 
-Brief description of the project.
+# Initialize variables
+k1 = 0
+n, m, z = 0, 0, 0
+l = len(text)
 
-## Table of Contents
-- [About](#about)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+# Encode text into the image
+for i in range(l):
+    x[n, m, z] = d[text[i]] ^ d[key[k1]]
+    z = (z + 1) % 3
+    if z == 0:
+        m = (m + 1) % j
+        if m == 0:
+            n = (n + 1) % i
+    k1 = (k1 + 1) % len(key)
 
-## About
-Describe what steganography is and how your project implements it. Include any relevant background information.
+# Save the encrypted image
+cv2.imwrite("encrypted_img.jpg", x)
+os.startfile("encrypted_img.jpg")
+print("Data Hiding in Image completed successfully.")
 
-## Features
-List the key features of your steganography project. For example:
-- Embedding data into images
-- Extracting data from images
-- Support for various image formats (if applicable)
-- Encryption of hidden data (if applicable)
-- etc.
+# Initialize variables for decoding
+k1 = 0
+n, m, z = 0, 0, 0
 
-## Installation
-Provide instructions on how to install and set up your project. Include any dependencies and how to install them. For example:
-```bash
-$ git clone https://github.com/yourusername/projectname.git
-$ cd projectname
-$ pip install -r requirements.txt
-```
-Include any specific configuration steps if necessary.
-
-## Usage
-Explain how to use your steganography tool. Provide examples of commands or code snippets. For example:
-```bash
-$ python steganography.py --embed --image image.png --data secret.txt --output output.png
-$ python steganography.py --extract --image output.png --output secret.txt
-```
-Include any options or parameters that can be used.
-
-## Contributing
-Provide guidelines for contributing to your project, if applicable. Include information on how to submit issues or pull requests.
-
-## License
-Specify the license under which your project is distributed. For example, MIT License, GNU General Public License, etc.
-
-## Contact
-Optionally, provide contact information or a way for users to reach out with questions or feedback.
-
----
-
-Make sure to replace placeholders (`projectname`, `yourusername`, etc.) with your actual project details. A good README should be clear, concise, and provide enough information for someone unfamiliar with your project to get started quickly.
+# Prompt to unhide text
+ch = int(input("\nEnter 1 To Unhide The Text: "))
+if ch == 1:
+    key1 = input("\nEnter Secret key To Unhide The Text: ")
+    decrypt = ""
+    if key == key1:
+        for i in range(l):
+            decrypt += c[x[n, m, z] ^ d[key[k1]]]
+            z = (z + 1) % 3
+            if z == 0:
+                m = (m + 1) % j
+                if m == 0:
+                    n = (n + 1) % i
+            k1 = (k1 + 1) % len(key)
+        print("The Secret Message is:", decrypt)
+    else:
+        print("Check your key!!!!")
+else:
+    print("Don't Want To Unhide The Text, Ok Then Bye!!!!")
